@@ -3,8 +3,8 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AppShell } from './AppShell';
 import { HomePage } from '../pages/HomePage';
-import { WorkPage } from '../pages/WorkPage';
-import { MePage } from '../pages/MePage';
+import { ProjectsPage } from '../pages/ProjectsPage';
+import { InfoPage } from '../pages/InfoPage';
 
 export const router = createBrowserRouter([
   {
@@ -12,8 +12,8 @@ export const router = createBrowserRouter([
     children: [
       { path: '/', element: <Navigate to="/home" replace /> },
       { path: '/home', element: <HomePage /> },
-      { path: '/work', element: <WorkPage /> },
-      { path: '/me', element: <MePage /> },
+      { path: '/projects', element: <ProjectsPage /> },
+      { path: '/info', element: <InfoPage /> },
     ],
   },
 ]);

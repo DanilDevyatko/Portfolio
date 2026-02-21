@@ -1,0 +1,33 @@
+.nav {
+  height: var(--nav-height);
+  display: flex;
+  flex-direction: column;
+  margin-top: 80px;
+}
+
+.link,
+.active {
+  font-weight: 300;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.active {
+  position: relative;
+  color: var(--text);
+  font-weight: 400;
+  transition: color 0.4s;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: var(--border);
+    display: block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+  }
+}

@@ -1,8 +1,12 @@
+import ReactMarkdown from 'react-markdown';
+import { getHomeMarkdown } from '../shared/content/home';
+
 export function HomePage() {
+  const md = getHomeMarkdown();
+
   return (
     <div>
-      <h1>Home</h1>
-      <h2>Here is my beginning</h2>
+      <ReactMarkdown>{md}</ReactMarkdown>
     </div>
   );
 }

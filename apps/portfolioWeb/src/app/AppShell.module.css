@@ -1,12 +1,26 @@
 .shell {
-  min-height: 100dvh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg);
 }
 
 .main {
   flex: 1;
-  padding: var(--space-4);
-  padding-bottom: calc(var(--nav-height) + var(--space-4));
+  margin: 40px;
+  padding: 40px;
+  border: 1px solid var(--border);
+}
+
+.outlet {
+  position: absolute;
+  right: 80px;
+  bottom: 80px;
+  max-width: 300px;
+}
+
+.copyright {
+  position: fixed;
+  left: 40px;
+  bottom: 14px;
+  font-size: 12px;
 }

@@ -1,25 +1,21 @@
 :root {
   /* spacing */
   --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
 
   /* radii */
   --radius-1: 10px;
   --radius-2: 14px;
 
   /* typography */
-  --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
-    sans-serif;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 
   /* colors (start neutral) */
   --bg: #0b0c10;
   --surface: #111218;
   --text: #f3f4f6;
   --muted: #a1a1aa;
-  --border: #23242c;
+  --border: rgba(243, 244, 246, 0.6);
 
   /* nav */
   --nav-height: 64px;

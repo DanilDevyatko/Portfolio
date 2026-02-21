@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 
-import styles from './BottomNav.module.css';
+import styles from './Nav.module.css';
 
 export function BottomNav() {
   return (
@@ -14,20 +14,20 @@ export function BottomNav() {
         Home
       </NavLink>
       <NavLink
-        to="/work"
+        to="/projects"
         className={({ isActive }) =>
           isActive ? `${styles.link} ${styles.active}` : styles.link
         }
       >
-        Work
+        Projects
       </NavLink>
       <NavLink
-        to="/me"
+        to="/info"
         className={({ isActive }) =>
           isActive ? `${styles.link} ${styles.active}` : styles.link
         }
       >
-        Me
+        Info
       </NavLink>
     </nav>
   );
