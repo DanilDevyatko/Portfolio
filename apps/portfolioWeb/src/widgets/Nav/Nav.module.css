@@ -2,11 +2,23 @@
   height: var(--nav-height);
   display: flex;
   flex-direction: column;
-  margin-top: 80px;
+  align-items: flex-start;
+  margin-top: 40px;
+
+  @media (min-width: 480px) {
+    margin-top: 80px;
+  }
+}
+
+.link {
+  &:hover {
+    color: var(--text);
+  }
 }
 
 .link,
 .active {
+  flex: 0;
   font-weight: 300;
   color: var(--muted);
   text-decoration: none;
@@ -18,13 +30,16 @@
   font-weight: 400;
   transition: color 0.4s;
 
+  &:hover {
+    color: var(--text);
+  }
+
   &::after {
     content: '';
     position: absolute;
-    left: -10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: var(--border);
+    right: -15px;
+    top: 10px;
+    background-color: var(--text);
     display: block;
     width: 4px;
     height: 4px;

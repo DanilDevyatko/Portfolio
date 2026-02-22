@@ -5,6 +5,8 @@ import ReactMarkdown from 'react-markdown';
 import { getAppShellMarkdown } from '../shared/content/appShell';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import { MouseFollower } from '../widgets/MouseFollower/MouseFollower';
+import { CrowedSimulator } from '../widgets/CrowdSimulator/CrowdSimulator';
 
 const md = getAppShellMarkdown();
 
@@ -14,9 +16,12 @@ const variants = {
   exit: { opacity: 0, y: -8, filter: 'blur(6px)' },
 };
 
+const preloaderWords = ['Danylos', 'Deviatko', 'Portfolio'];
+
 export function AppShell() {
   const location = useLocation();
   const outlet = useOutlet();
+  const [loading, setLoading] = useState(true);
 
   // Freeze what is currently shown so exit can animate the *old* page
   const [shownKey, setShownKey] = useState(location.pathname);
@@ -39,42 +44,60 @@ export function AppShell() {
     }
   }, [location.pathname, outlet, shownKey]);
 
+  useEffect(() => {
+    const id = window.setTimeout(() => setLoading(false), 3200);
+    return () => window.clearTimeout(id);
+  }, []);
+
   return (
     <div className={styles.shell}>
+      {loading && (
+        <div className={styles.preloader}>
+          {preloaderWords.map((word, i) => (
+            <span key={word} className={styles.word} style={{ ['--i' as string]: i }}>
+              {word}
+            </span>
+          ))}
+        </div>
+      )}
       <main className={styles.main}>
         <ReactMarkdown>{md}</ReactMarkdown>
         <BottomNav />
-
-        <AnimatePresence
-          mode="wait"
-          initial={false}
-          onExitComplete={() => {
-            const next = pendingRef.current;
-            if (next) {
-              setShownKey(next.key);
-              setShownNode(next.node);
-              pendingRef.current = null;
-            }
-            setIsPresent(true);
-          }}
-        >
-          {isPresent && (
-            <motion.div
-              key={shownKey}
-              variants={variants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              style={{ willChange: 'transform, opacity, filter' }}
-              className={styles.outlet}
-            >
-              {shownNode}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <div className={styles.copyright}>© Danylo Deviatko</div>
+        <MouseFollower />
+        <div className={styles.outletBackground}>
+          <AnimatePresence
+            mode="wait"
+            initial={false}
+            onExitComplete={() => {
+              const next = pendingRef.current;
+              if (next) {
+                setShownKey(next.key);
+                setShownNode(next.node);
+                pendingRef.current = null;
+              }
+              setIsPresent(true);
+            }}
+          >
+            {isPresent && (
+              <motion.div
+                key={shownKey}
+                variants={variants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                style={{ willChange: 'transform, opacity, filter' }}
+                className={styles.outlet}
+              >
+                {shownNode}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+        <div className={styles.crowdSimulator}>
+          <CrowedSimulator />
+        </div>
+        <div className={styles.copyright}>&copy; Danylo Deviatko</div>
       </main>
     </div>
   );

@@ -1,3 +1,3 @@
-[linkedin](https://www.linkedin.com/in/danil-deviatko)
+### [linkedin](https://www.linkedin.com/in/danil-deviatko)
 
-[github](https://github.com/DanilDevyatko)
+### [github](https://github.com/DanilDevyatko)

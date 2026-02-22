@@ -5,7 +5,17 @@ export function ProjectsPage() {
   const md = getProjectsMarkdown();
   return (
     <div>
-      <ReactMarkdown>{md}</ReactMarkdown>
+      <ReactMarkdown
+        // Components prop to open links in new tab
+        components={{
+          a: ({ node, ...props }) => {
+            void node;
+            return <a {...props} target="_blank" rel="noopener noreferrer" />;
+          },
+        }}
+      >
+        {md}
+      </ReactMarkdown>
     </div>
   );
 }

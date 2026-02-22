@@ -1,194 +1,158 @@
 # Architecture
 
-This document describes the architecture of the portfolio project as a small product: the system goals, boundaries, routing model, styling approach, tooling, and key decisions.
+This document describes the current architecture of the portfolio app in this repository.
 
----
+## 1) Scope
 
-## 1) Purpose
+- App: `apps/portfolioWeb`
+- Runtime: client-side React + Vite
+- Purpose: personal portfolio with app-shell navigation and markdown-driven content
 
-This project is a mobile-first portfolio built as a product-like web app. The goal is to demonstrate system-level frontend engineering: clear boundaries, explicit decisions, maintainability, and reproducible tooling.
+## 2) High-Level Model
 
----
+The app is a single-page application with a persistent shell. Route pages are rendered inside the shell via React Router `Outlet`.
 
-## 2) Goals and constraints
-
-### Goals
-
-- **App-like UX on mobile**: persistent shell + bottom navigation.
-- **URL-driven navigation**: deep links, refresh-safe routes, correct back/forward behavior.
-- **Clear boundaries**: predictable folder responsibilities and low coupling.
-- **Scalable content**: allow adding projects/notes without rewriting the structure.
-- **Low friction**: boring, proven solutions; minimal runtime magic.
-
-### Constraints (intentional)
-
-- No backend/auth in the initial stage.
-- No heavy animation/polish before structure is stable.
-- Prefer explicit architecture over “one-file quick hacks”.
-
----
-
-## 3) High-level design
-
-The app is a client-side React application with a persistent layout and route-driven content rendering.
-
-### Render model
-
-```
-RouterProvider
-  └─ AppShell (persistent)
-       ├─ Main content (Outlet: changes by route)
-       └─ BottomNav (persistent)
+```text
+ReactDOM.createRoot
+  -> RouterProvider(router)
+     -> AppShell (persistent)
+        -> Header/intro markdown
+        -> BottomNav (persistent)
+        -> Animated Outlet content (route pages)
+        -> Visual widgets (Crowd simulator, mouse follower)
 ```
 
-Key idea:
+Key behavior:
 
-- `AppShell` stays mounted.
-- Only the active page changes inside `<Outlet />`.
+- `AppShell` stays mounted across route changes.
+- Route page content swaps in/out with `framer-motion` animations.
+- A timed preloader overlays first paint (`Danylos Deviatko Portfolio`, word-by-word animation).
 
-This produces an “installed app” feeling on mobile.
+## 3) Routing
 
----
+Defined in `apps/portfolioWeb/src/app/router.tsx`.
 
-## 4) Routing and navigation
+Current route map:
 
-### Route map (current)
+- `/` -> redirect to `/home`
+- `/home` -> `HomePage`
+- `/projects` -> `ProjectsPage`
+- `/info` -> `InfoPage`
 
-- `/home`
-- `/work`
-- `/me`
+Notes:
 
-`/` redirects to `/home`.
+- Navigation state is URL-driven through `NavLink` active state.
+- The router is browser-history based (`createBrowserRouter`).
 
-### Why routing is a first-class concept
-
-Routing is treated as application state:
-
-- URLs are shareable (deep links).
-- Refresh does not lose context.
-- Browser history works (back/forward).
-- Bottom navigation becomes a reflection of route state (active link), not custom state.
-
-### Planned extension
-
-- `/work/:projectId` for case studies.
-- Nested routes as sections grow (only when needed).
-
----
-
-## 5) Source code boundaries
+## 4) Source Layout and Responsibilities
 
 Location: `apps/portfolioWeb/src`
 
-Recommended structure:
+```text
+app/
+  AppShell.tsx             # persistent layout + transition orchestration + preloader
+  AppShell.module.css      # shell/layout styles
+  router.tsx               # route tree
+  styles/
+    tokens.css             # design tokens (CSS variables)
+    globals.css            # global reset/base rules
 
-```
-src/
-  app/        # app wiring (router, shell, providers, global styles)
-  pages/      # route-level screens (thin composition)
-  widgets/    # reusable large UI blocks (e.g., BottomNav)
-  shared/     # low-level reusable utilities and primitives
-```
+pages/
+  HomePage.tsx
+  ProjectsPage.tsx
+  InfoPage.tsx             # route-level composition only
 
-### Responsibilities and rules
+content/
+  appShell.md
+  home.md
+  projects.md
+  info.md                  # markdown source of page content
 
-#### `app/` — application composition
+shared/content/
+  appShell.ts
+  home.ts
+  projects.ts
+  info.ts                  # markdown accessors
 
-Owns: router creation, shell layout, global providers, global styles.
+widgets/
+  Nav/
+  CrowdSimulator/
+  MouseFollower/           # reusable UI widgets
 
-- Can import from anywhere (it composes the app).
-- Should contain minimal “business logic”.
-
-#### `pages/` — route-level screens
-
-Owns: composition for a specific route.
-
-- Pages should stay thin.
-- Avoid reusable logic here.
-
-#### `widgets/` — reusable UI blocks
-
-Owns: large reusable parts of UI used in multiple places.
-
-- Can keep UI state local.
-- Should not depend on specific pages.
-
-#### `shared/` — primitives and utilities
-
-Owns: reusable low-level building blocks.
-
-- Must not import from `app/`, `pages/`, or `widgets/`.
-
-### Import direction
-
-```
-app → pages → widgets → shared
+assets/
+  crowed.png               # sprite sheet/image assets
 ```
 
----
+Boundary rules (current intent):
 
-## 6) Styling approach
+- `app/` composes the application and can import from other layers.
+- `pages/` should stay thin; mostly render markdown/content.
+- `widgets/` contain reusable UI behavior and visuals.
+- `shared/` contains low-level content helpers.
 
-### Global layer
+## 5) Content Architecture
 
-- `tokens.css` — design tokens (CSS variables).
-- `globals.css` — base rules.
+Content is markdown-first:
 
-### Local layer
+- Raw markdown lives under `src/content/*.md`.
+- Pages consume markdown via typed accessor functions in `src/shared/content/*.ts`.
+- Markdown rendering is done with `react-markdown`.
+- In `ProjectsPage`, links are explicitly rendered with `target="_blank" rel="noopener noreferrer"`.
 
-- CSS Modules (`*.module.css`) for component-level styles.
+This keeps copy editable without changing page component structure.
 
----
+## 6) Styling Strategy
 
-## 7) Tooling and reproducibility
+- Global style foundation:
+  - `tokens.css` for shared design variables
+  - `globals.css` for base element styles and layout defaults
+- Component styles:
+  - CSS Modules (`*.module.css`) for shell and widgets
 
-- pnpm workspace with committed lockfile.
-- Strict TypeScript.
-- ESLint + Prettier.
-- EditorConfig for editor consistency.
+Current notable layout decisions:
 
----
+- `AppShell` owns primary spacing, outlet container, and simulator placement.
+- `CrowdSimulator` visual area is constrained via module CSS.
+- Overflow/viewport behavior is tuned for mobile and desktop differences.
 
-## 8) Key decisions
+## 7) Animation and Interaction
 
-### Client-side routing
+- Route transitions: `framer-motion` (`AnimatePresence` + `motion.div`) in `AppShell`.
+- Background crowd animation: `gsap` in `widgets/CrowdSimulator/CrowdSimulator.tsx`.
+- Mouse follower: enabled only for fine pointer/hover-capable devices (`matchMedia('(hover: hover) and (pointer: fine)')`).
 
-React Router with layout routes for persistent shell.
+## 8) Tooling and Quality Gates
 
-### App Shell
+From `apps/portfolioWeb/package.json`:
 
-Centralized layout with `<Outlet />` and bottom navigation.
+- Package manager: `pnpm` (workspace root managed by `pnpm-workspace.yaml`)
+- Build: `tsc -b && vite build`
+- Dev server: `vite`
+- Lint: `eslint .`
+- TypeScript: strict compiler settings (see `tsconfig*.json`)
 
-### Styling
+Commands:
 
-CSS Modules + global tokens for predictable styling.
+```bash
+pnpm --filter portfolioweb dev
+pnpm --filter portfolioweb lint
+pnpm --filter portfolioweb build
+```
 
----
+## 9) Current Tradeoffs / Follow-Ups
 
-## 9) Evolution plan
+- `CrowedSimulator` export alias exists for backward compatibility with existing imports; canonical naming should be standardized to `CrowdSimulator`.
+- Preloader is currently timer-driven; if needed, it can be switched to asset-readiness-driven completion.
+- Markdown is local and static; no CMS/backend integration is currently in scope.
 
-- Content as data (Markdown/JSON).
-- Case studies with `/work/:projectId`.
-- CI quality gates (typecheck, lint, format).
+## 10) Architectural Summary
 
----
+The current project is a clean client-side SPA with:
 
-## 10) Glossary
+- URL-driven navigation
+- a persistent animated app shell
+- markdown-managed content
+- isolated widget effects
+- modern React + TypeScript + Vite tooling
 
-- **App Shell**  
-  The persistent layout of the application that remains mounted while route content changes.
-
-- **Outlet**  
-  A placeholder component provided by React Router where the active child route renders.
-
-- **Page**  
-  A route-level screen mapped directly to a URL and responsible for composing UI for that route.
-
-- **Widget**  
-  A reusable UI block composed of smaller elements and used across multiple pages.
-
-- **Shared**  
-  The lowest-level layer containing reusable utilities and primitives with no knowledge of app structure.
-
-- **Design Tokens**  
-  CSS variables that define shared visual values such as spacing, colors, and typography.
+This structure is suitable for iterative portfolio growth without introducing backend or heavy framework complexity.
