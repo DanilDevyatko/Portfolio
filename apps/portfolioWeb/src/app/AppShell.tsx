@@ -16,7 +16,7 @@ const variants = {
   exit: { opacity: 0, y: -8, filter: 'blur(6px)' },
 };
 
-const preloaderWords = ['Danylos', 'Deviatko', 'Portfolio'];
+const preloaderWords = ['Danylo', 'Deviatko', 'Portfolio'];
 
 export function AppShell() {
   const location = useLocation();
