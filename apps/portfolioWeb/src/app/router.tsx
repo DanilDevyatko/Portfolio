@@ -2,18 +2,14 @@
 
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AppShell } from './AppShell';
-import { HomePage } from '../pages/HomePage';
 import { ProjectsPage } from '../pages/ProjectsPage';
-import { InfoPage } from '../pages/InfoPage';
 
 export const router = createBrowserRouter([
   {
     element: <AppShell />,
     children: [
-      { path: '/', element: <Navigate to="/home" replace /> },
-      { path: '/home', element: <HomePage /> },
+      { path: '/', element: <Navigate to="/projects" replace /> },
       { path: '/projects', element: <ProjectsPage /> },
-      { path: '/info', element: <InfoPage /> },
     ],
   },
 ]);

@@ -8,7 +8,8 @@
 
   /* typography */
   --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    'Montserrat', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    Arial, sans-serif;
 
   /* colors (start neutral) */
   --bg: #0b0c10;

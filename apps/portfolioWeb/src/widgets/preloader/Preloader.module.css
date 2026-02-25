@@ -1,0 +1,35 @@
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  gap: 0.4ch;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  color: var(--text);
+  font-size: clamp(20px, 4vw, 42px);
+  animation: preloaderHide 0.35s ease 1.8s forwards;
+}
+
+.word {
+  display: inline-block;
+  animation: wordOut 0.45s ease forwards;
+  animation-delay: calc(var(--i) * 0.35s + 0.6s);
+}
+
+@keyframes wordOut {
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+    filter: blur(4px);
+  }
+}
+
+@keyframes preloaderHide {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}

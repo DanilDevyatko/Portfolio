@@ -1,22 +1,26 @@
 import { useLocation, useOutlet } from 'react-router-dom';
 import styles from './AppShell.module.css';
-import { BottomNav } from '../widgets/Nav/Nav';
+import { Nav } from '../widgets/Nav/Nav';
 import ReactMarkdown from 'react-markdown';
 import { getAppShellMarkdown } from '../shared/content/appShell';
+import { getSocialsMarkdown } from '../shared/content/socials';
+import { getHomeMarkdown } from '../shared/content/home';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { MouseFollower } from '../widgets/MouseFollower/MouseFollower';
 import { CrowedSimulator } from '../widgets/CrowdSimulator/CrowdSimulator';
+import { Preloader } from '../widgets/preloader/Preloader';
+import { RotatingSentences } from '../widgets/RotatingSentences/RotatingSentences';
 
-const md = getAppShellMarkdown();
+const appShellMarkdown = getAppShellMarkdown();
+const socialsMarkdown = getSocialsMarkdown();
+const homeMarkdown = getHomeMarkdown();
 
 const variants = {
   initial: { opacity: 0, y: 10, filter: 'blur(6px)' },
   animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
   exit: { opacity: 0, y: -8, filter: 'blur(6px)' },
 };
-
-const preloaderWords = ['Danylo', 'Deviatko', 'Portfolio'];
 
 export function AppShell() {
   const location = useLocation();
@@ -49,55 +53,56 @@ export function AppShell() {
     return () => window.clearTimeout(id);
   }, []);
 
+  const headings = homeMarkdown
+    .split('.')
+    .map((sentence) => sentence.trim())
+    .filter(Boolean);
+
   return (
     <div className={styles.shell}>
-      {loading && (
-        <div className={styles.preloader}>
-          {preloaderWords.map((word, i) => (
-            <span key={word} className={styles.word} style={{ ['--i' as string]: i }}>
-              {word}
-            </span>
-          ))}
-        </div>
-      )}
+      {loading && <Preloader />}
       <main className={styles.main}>
-        <ReactMarkdown>{md}</ReactMarkdown>
-        <BottomNav />
-        <MouseFollower />
-        <div className={styles.outletBackground}>
-          <AnimatePresence
-            mode="wait"
-            initial={false}
-            onExitComplete={() => {
-              const next = pendingRef.current;
-              if (next) {
-                setShownKey(next.key);
-                setShownNode(next.node);
-                pendingRef.current = null;
-              }
-              setIsPresent(true);
-            }}
-          >
-            {isPresent && (
-              <motion.div
-                key={shownKey}
-                variants={variants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                style={{ willChange: 'transform, opacity, filter' }}
-                className={styles.outlet}
-              >
-                {shownNode}
-              </motion.div>
-            )}
-          </AnimatePresence>
+        <ReactMarkdown>{appShellMarkdown}</ReactMarkdown>
+        <Nav />
+        <div className={styles.heading}>
+          <RotatingSentences sentences={headings} />
         </div>
+        <AnimatePresence
+          mode="wait"
+          initial={false}
+          onExitComplete={() => {
+            const next = pendingRef.current;
+            if (next) {
+              setShownKey(next.key);
+              setShownNode(next.node);
+              pendingRef.current = null;
+            }
+            setIsPresent(true);
+          }}
+        >
+          {isPresent && (
+            <motion.div
+              key={shownKey}
+              variants={variants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              style={{ willChange: 'transform, opacity, filter' }}
+              className={styles.outlet}
+            >
+              {shownNode}
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <div className={styles.info}>
+          <ReactMarkdown>{socialsMarkdown}</ReactMarkdown>
+        </div>
+        <div className={styles.copyright}>&copy; Danylo Deviatko</div>
+        <MouseFollower />
         <div className={styles.crowdSimulator}>
           <CrowedSimulator />
         </div>
-        <div className={styles.copyright}>&copy; Danylo Deviatko</div>
       </main>
     </div>
   );
