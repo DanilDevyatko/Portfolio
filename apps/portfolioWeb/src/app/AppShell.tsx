@@ -4,17 +4,15 @@ import { Nav } from '../widgets/Nav/Nav';
 import ReactMarkdown from 'react-markdown';
 import { getAppShellMarkdown } from '../shared/content/appShell';
 import { getSocialsMarkdown } from '../shared/content/socials';
-import { getHomeMarkdown } from '../shared/content/home';
+
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { MouseFollower } from '../widgets/MouseFollower/MouseFollower';
 import { CrowedSimulator } from '../widgets/CrowdSimulator/CrowdSimulator';
 import { Preloader } from '../widgets/preloader/Preloader';
-import { RotatingSentences } from '../widgets/RotatingSentences/RotatingSentences';
 
 const appShellMarkdown = getAppShellMarkdown();
 const socialsMarkdown = getSocialsMarkdown();
-const homeMarkdown = getHomeMarkdown();
 
 const variants = {
   initial: { opacity: 0, y: 10, filter: 'blur(6px)' },
@@ -53,20 +51,12 @@ export function AppShell() {
     return () => window.clearTimeout(id);
   }, []);
 
-  const headings = homeMarkdown
-    .split('.')
-    .map((sentence) => sentence.trim())
-    .filter(Boolean);
-
   return (
     <div className={styles.shell}>
       {loading && <Preloader />}
       <main className={styles.main}>
         <ReactMarkdown>{appShellMarkdown}</ReactMarkdown>
         <Nav />
-        <div className={styles.heading}>
-          <RotatingSentences sentences={headings} />
-        </div>
         <AnimatePresence
           mode="wait"
           initial={false}

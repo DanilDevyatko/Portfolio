@@ -29,13 +29,6 @@
   }
 }
 
-.heading {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
 .info {
   position: absolute;
   top: 15px;
@@ -48,7 +41,8 @@
 }
 
 .outlet {
-  max-width: 500px;
+  display: flex;
+  justify-content: center;
   max-height: 45vh;
   overflow-y: auto;
   overflow-x: hidden;
