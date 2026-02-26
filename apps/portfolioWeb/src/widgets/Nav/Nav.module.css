@@ -33,16 +33,4 @@
   &:hover {
     color: var(--text);
   }
-
-  &::after {
-    content: '';
-    position: absolute;
-    right: -15px;
-    top: 10px;
-    background-color: var(--text);
-    display: block;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-  }
 }

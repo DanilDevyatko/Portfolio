@@ -87,7 +87,7 @@ export function AppShell() {
             )}
           </AnimatePresence>
         </div>
-        <div className={styles.info}>
+        <div className={styles.socials}>
           <ReactMarkdown>{socialsMarkdown}</ReactMarkdown>
         </div>
         <div className={styles.copyright}>&copy; Danylo Deviatko</div>

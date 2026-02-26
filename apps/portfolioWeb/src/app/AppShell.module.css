@@ -7,10 +7,6 @@
   @media (min-width: 768px) {
     padding: 40px;
   }
-
-  @media (orientation: landscape) {
-    padding: 15px;
-  }
 }
 
 .main {
@@ -24,20 +20,16 @@
   @media (min-width: 768px) {
     padding: 40px;
   }
-
-  @media (orientation: landscape) {
-    padding: 15px;
-  }
 }
 
-.info {
+.socials {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 0;
+  right: 0;
+  padding: 20px;
 
   @media (min-width: 768px) {
-    top: 40px;
-    right: 40px;
+    padding: 40px;
   }
 }
 
@@ -46,6 +38,14 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+
+  @media (min-width: 768px) {
+    padding: 40px;
+  }
 }
 
 .outlet {
