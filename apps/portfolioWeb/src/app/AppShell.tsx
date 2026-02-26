@@ -57,34 +57,36 @@ export function AppShell() {
       <main className={styles.main}>
         <ReactMarkdown>{appShellMarkdown}</ReactMarkdown>
         <Nav />
-        <AnimatePresence
-          mode="wait"
-          initial={false}
-          onExitComplete={() => {
-            const next = pendingRef.current;
-            if (next) {
-              setShownKey(next.key);
-              setShownNode(next.node);
-              pendingRef.current = null;
-            }
-            setIsPresent(true);
-          }}
-        >
-          {isPresent && (
-            <motion.div
-              key={shownKey}
-              variants={variants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              style={{ willChange: 'transform, opacity, filter' }}
-              className={styles.outlet}
-            >
-              {shownNode}
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div className={styles.outletWrapper}>
+          <AnimatePresence
+            mode="wait"
+            initial={false}
+            onExitComplete={() => {
+              const next = pendingRef.current;
+              if (next) {
+                setShownKey(next.key);
+                setShownNode(next.node);
+                pendingRef.current = null;
+              }
+              setIsPresent(true);
+            }}
+          >
+            {isPresent && (
+              <motion.div
+                key={shownKey}
+                variants={variants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                style={{ willChange: 'transform, opacity, filter' }}
+                className={styles.outlet}
+              >
+                {shownNode}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
         <div className={styles.info}>
           <ReactMarkdown>{socialsMarkdown}</ReactMarkdown>
         </div>

@@ -9,7 +9,7 @@ export const router = createBrowserRouter([
   {
     element: <AppShell />,
     children: [
-      { path: '/', element: <Navigate to="/projects" replace /> },
+      { path: '/', element: <Navigate to="/home" replace /> },
       { path: '/projects', element: <ProjectsPage /> },
       { path: '/home', element: <HomePage /> },
     ],

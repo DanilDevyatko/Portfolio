@@ -6,6 +6,14 @@ export function Nav() {
   return (
     <nav className={styles.nav}>
       <NavLink
+        to="/home"
+        className={({ isActive }) =>
+          isActive ? `${styles.link} ${styles.active}` : styles.link
+        }
+      >
+        Home
+      </NavLink>
+      <NavLink
         to="/projects"
         className={({ isActive }) =>
           isActive ? `${styles.link} ${styles.active}` : styles.link
