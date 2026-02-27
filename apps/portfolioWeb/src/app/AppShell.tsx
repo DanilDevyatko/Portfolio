@@ -55,7 +55,14 @@ export function AppShell() {
     <div className={styles.shell}>
       {loading && <Preloader />}
       <main className={styles.main}>
-        <ReactMarkdown>{appShellMarkdown}</ReactMarkdown>
+        <header className={styles.header}>
+          <div className={styles.logo}>
+            <ReactMarkdown>{appShellMarkdown}</ReactMarkdown>
+          </div>
+          <div className={styles.socials}>
+            <ReactMarkdown>{socialsMarkdown}</ReactMarkdown>
+          </div>
+        </header>
         <Nav />
         <div className={styles.outletWrapper}>
           <AnimatePresence
@@ -87,15 +94,13 @@ export function AppShell() {
             )}
           </AnimatePresence>
         </div>
-        <div className={styles.socials}>
-          <ReactMarkdown>{socialsMarkdown}</ReactMarkdown>
-        </div>
-        <div className={styles.copyright}>&copy; Danylo Deviatko</div>
+
         <MouseFollower />
         <div className={styles.crowdSimulator}>
           <CrowedSimulator />
         </div>
       </main>
+      <div className={styles.copyright}>&copy; Danylo Deviatko</div>
     </div>
   );
 }
