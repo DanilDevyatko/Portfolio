@@ -1,4 +1,4 @@
-# ADR: Styling with CSS Modules and Global Design Tokens
+# ADR: CSS Modules with Global Tokens
 
 ## Status
 
@@ -6,42 +6,34 @@ Accepted
 
 ## Context
 
-The project requires predictable, maintainable styling with clear ownership and minimal runtime overhead.
+The project needs predictable styling with low runtime complexity.
+Requirements:
 
-Constraints:
-
-- Avoid global CSS collisions
-- Avoid runtime styling solutions
-- Enable safe refactoring as the app grows
-- Keep styling boring and explicit
-
-Pure global CSS would scale poorly, while runtime CSS-in-JS solutions introduce unnecessary complexity for this project.
+- avoid global selector collisions
+- keep component ownership clear
+- keep theme primitives centralized
+- avoid runtime CSS-in-JS overhead
 
 ## Decision
 
 Use a two-layer styling approach:
 
-1. **Global styles**
+1. Global foundation
+- `src/app/styles/tokens.css` for design tokens (color, spacing, typography, nav sizing)
+- `src/app/styles/globals.css` for reset/base element styles
 
-   - `tokens.css` for design tokens (spacing, colors, typography)
-   - `globals.css` for base rules (reset, body defaults)
-
-2. **Local styles**
-   - CSS Modules (`*.module.css`) for component-level styling
-
-Class names are scoped at build time, and tokens provide a shared visual language across the app.
+2. Component-local styles
+- CSS Modules (`*.module.css`) for `AppShell` and widgets
 
 ## Consequences
 
-### Positive
+Positive:
 
-- No global class name collisions
-- Clear style ownership per component
-- Zero runtime styling cost
-- Easy refactoring and deletion of components
-- Tokens enable consistent visual language
+- Scoped class names reduce accidental style leakage.
+- Shared tokens keep look-and-feel consistent.
+- Styling has no extra runtime engine.
 
-### Negative
+Negative:
 
-- Requires discipline in file naming and imports
-- Slight verbosity compared to utility-first approaches
+- Slightly more file coordination (global vs module files).
+- Cross-component visual refactors require touching multiple module files.

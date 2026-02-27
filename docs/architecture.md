@@ -1,158 +1,130 @@
 # Architecture
 
-This document describes the current architecture of the portfolio app in this repository.
+This document describes the current architecture of `apps/portfolioWeb`.
 
-## 1) Scope
+## 1. Scope
 
-- App: `apps/portfolioWeb`
-- Runtime: client-side React + Vite
-- Purpose: personal portfolio with app-shell navigation and markdown-driven content
+- Runtime: client-side SPA (React + Vite)
+- Domain: personal portfolio
+- Hosting model: static app with SPA fallback rewrite (`vercel.json`)
 
-## 2) High-Level Model
+## 2. High-Level Model
 
-The app is a single-page application with a persistent shell. Route pages are rendered inside the shell via React Router `Outlet`.
+The app uses a persistent shell (`AppShell`) and URL-driven page content via React Router `Outlet`.
 
 ```text
-ReactDOM.createRoot
+main.tsx
   -> RouterProvider(router)
      -> AppShell (persistent)
-        -> Header/intro markdown
-        -> BottomNav (persistent)
-        -> Animated Outlet content (route pages)
-        -> Visual widgets (Crowd simulator, mouse follower)
+        -> header markdown (name + role)
+        -> socials markdown links
+        -> Nav (Home, Projects)
+        -> outletWrapper (scroll container)
+           -> animated route page
+        -> MouseFollower (desktop/fine-pointer only)
+        -> CrowdSimulator (canvas background strip)
 ```
 
-Key behavior:
+## 3. Routing
 
-- `AppShell` stays mounted across route changes.
-- Route page content swaps in/out with `framer-motion` animations.
-- A timed preloader overlays first paint (`Danylos Deviatko Portfolio`, word-by-word animation).
+Source: `src/app/router.tsx`
 
-## 3) Routing
-
-Defined in `apps/portfolioWeb/src/app/router.tsx`.
-
-Current route map:
-
-- `/` -> redirect to `/home`
+- `/` -> `<Navigate to="/home" replace />`
 - `/home` -> `HomePage`
 - `/projects` -> `ProjectsPage`
-- `/info` -> `InfoPage`
 
-Notes:
+Router type: `createBrowserRouter`.
 
-- Navigation state is URL-driven through `NavLink` active state.
-- The router is browser-history based (`createBrowserRouter`).
+## 4. Source Layout
 
-## 4) Source Layout and Responsibilities
-
-Location: `apps/portfolioWeb/src`
+`apps/portfolioWeb/src`
 
 ```text
 app/
-  AppShell.tsx             # persistent layout + transition orchestration + preloader
-  AppShell.module.css      # shell/layout styles
-  router.tsx               # route tree
+  router.tsx
+  AppShell.tsx
+  AppShell.module.css
   styles/
-    tokens.css             # design tokens (CSS variables)
-    globals.css            # global reset/base rules
+    tokens.css
+    globals.css
 
 pages/
   HomePage.tsx
   ProjectsPage.tsx
-  InfoPage.tsx             # route-level composition only
-
-content/
-  appShell.md
-  home.md
-  projects.md
-  info.md                  # markdown source of page content
-
-shared/content/
-  appShell.ts
-  home.ts
-  projects.ts
-  info.ts                  # markdown accessors
 
 widgets/
   Nav/
+  RotatingSentences/
   CrowdSimulator/
-  MouseFollower/           # reusable UI widgets
+  MouseFollower/
+  preloader/
+
+content/
+  appShell.md
+  socials.md
+  home.md
+  projects.md
+
+shared/content/
+  appShell.ts
+  socials.ts
+  home.ts
+  projects.ts
 
 assets/
-  crowed.png               # sprite sheet/image assets
+  logo.png
+  crowed.png
 ```
 
-Boundary rules (current intent):
+## 5. Content Flow
 
-- `app/` composes the application and can import from other layers.
-- `pages/` should stay thin; mostly render markdown/content.
-- `widgets/` contain reusable UI behavior and visuals.
-- `shared/` contains low-level content helpers.
+- Raw copy is authored in `src/content/*.md`.
+- Content accessors in `src/shared/content/*.ts` expose markdown to pages/shell.
+- Rendering is done by `react-markdown`.
+- `ProjectsPage` overrides `<a>` rendering to force `target="_blank"` and `rel="noopener noreferrer"`.
 
-## 5) Content Architecture
+## 6. UI Composition
 
-Content is markdown-first:
+- `AppShell` orchestrates persistent layout and route transitions.
+- `Nav` reflects route state via `NavLink` active styles.
+- `HomePage` transforms `home.md` into sentence chunks and renders them through `RotatingSentences`.
+- `ProjectsPage` renders markdown project entries.
+- `Preloader` overlays initial render for 3200ms.
 
-- Raw markdown lives under `src/content/*.md`.
-- Pages consume markdown via typed accessor functions in `src/shared/content/*.ts`.
-- Markdown rendering is done with `react-markdown`.
-- In `ProjectsPage`, links are explicitly rendered with `target="_blank" rel="noopener noreferrer"`.
+## 7. Styling System
 
-This keeps copy editable without changing page component structure.
+- Global tokens: `app/styles/tokens.css`
+- Global element rules/reset: `app/styles/globals.css`
+- Local component styles: CSS Modules (`*.module.css`)
 
-## 6) Styling Strategy
+Important layout behavior:
 
-- Global style foundation:
-  - `tokens.css` for shared design variables
-  - `globals.css` for base element styles and layout defaults
-- Component styles:
-  - CSS Modules (`*.module.css`) for shell and widgets
+- `.main` is a flex column container with hidden outer overflow.
+- `.outletWrapper` is the scroll container (`overflow-y: auto`, `min-height: 0`).
+- `CrowdSimulator` is kept as a separate flex item so content scrolling does not push it out.
 
-Current notable layout decisions:
-
-- `AppShell` owns primary spacing, outlet container, and simulator placement.
-- `CrowdSimulator` visual area is constrained via module CSS.
-- Overflow/viewport behavior is tuned for mobile and desktop differences.
-
-## 7) Animation and Interaction
+## 8. Motion and Interaction
 
 - Route transitions: `framer-motion` (`AnimatePresence` + `motion.div`) in `AppShell`.
-- Background crowd animation: `gsap` in `widgets/CrowdSimulator/CrowdSimulator.tsx`.
-- Mouse follower: enabled only for fine pointer/hover-capable devices (`matchMedia('(hover: hover) and (pointer: fine)')`).
+- Crowd animation: `gsap` ticker rendering sprite peeps on canvas.
+- Mouse follower: enabled only when `(hover: hover) and (pointer: fine)` matches.
 
-## 8) Tooling and Quality Gates
+## 9. Tooling
 
-From `apps/portfolioWeb/package.json`:
+App package scripts (`apps/portfolioWeb/package.json`):
 
-- Package manager: `pnpm` (workspace root managed by `pnpm-workspace.yaml`)
-- Build: `tsc -b && vite build`
-- Dev server: `vite`
-- Lint: `eslint .`
-- TypeScript: strict compiler settings (see `tsconfig*.json`)
+- `dev`: `vite`
+- `build`: `tsc -b && vite build`
+- `lint`: `eslint .`
+- `preview`: `vite preview`
 
-Commands:
+TypeScript:
 
-```bash
-pnpm --filter portfolioweb dev
-pnpm --filter portfolioweb lint
-pnpm --filter portfolioweb build
-```
+- strict mode enabled in `tsconfig.app.json`
+- no emit in app config (`noEmit: true`)
 
-## 9) Current Tradeoffs / Follow-Ups
+## 10. Current Tradeoffs
 
-- `CrowedSimulator` export alias exists for backward compatibility with existing imports; canonical naming should be standardized to `CrowdSimulator`.
-- Preloader is currently timer-driven; if needed, it can be switched to asset-readiness-driven completion.
-- Markdown is local and static; no CMS/backend integration is currently in scope.
-
-## 10) Architectural Summary
-
-The current project is a clean client-side SPA with:
-
-- URL-driven navigation
-- a persistent animated app shell
-- markdown-managed content
-- isolated widget effects
-- modern React + TypeScript + Vite tooling
-
-This structure is suitable for iterative portfolio growth without introducing backend or heavy framework complexity.
+- `CrowedSimulator` is still exported as a compatibility alias for existing imports; canonical component name is `CrowdSimulator`.
+- Preloader completion is timer-based, not tied to asset readiness.
+- Content is local markdown; there is no CMS/backend layer.

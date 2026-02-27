@@ -1,4 +1,4 @@
-# ADR: Client-side routing with React Router
+# ADR: Client-side Routing with React Router
 
 ## Status
 
@@ -6,36 +6,35 @@ Accepted
 
 ## Context
 
-The portfolio is designed as a product-like, mobile-first web application.
-Navigation must support:
+The app needs:
 
-- Deep links (shareable URLs)
-- Browser back/forward behavior
-- Page refresh without losing state
-- A persistent layout (App Shell)
+- shareable URLs
+- browser back/forward support
+- stable shell with page swaps inside a single app runtime
 
-**_Simple scroll-based navigation or conditional rendering would not satisfy these requirements._**
+The current project does not require SSR or server-side data loading.
 
 ## Decision
 
-We use client-side routing via `react-router-dom`, specifically:
+Use `react-router-dom` with `createBrowserRouter`.
 
-- `createBrowserRouter`
-- A layout route that renders a persistent App Shell
-- Route-driven navigation state
+Current routes:
 
-URLs represent application state, and the active screen is rendered inside `<Outlet />`.
+- `/` -> redirect to `/home`
+- `/home` -> Home page
+- `/projects` -> Projects page
+
+`AppShell` is the layout route element and renders active page content via `Outlet`.
 
 ## Consequences
 
-**Positive**
+Positive:
 
-- Navigation state is explicit and predictable
-- Pages are addressable and shareable
-- Layout logic is centralized
-- Bottom navigation can rely on route state
+- URL is the single source of navigation state.
+- Pages are directly linkable/bookmarkable.
+- Layout route cleanly supports persistent shell architecture.
 
-**Negative**
+Negative:
 
-- Application is client-side only (no SSR initially)
-- Routing logic adds a small amount of structural complexity
+- Requires SPA fallback rewrites in hosting environments.
+- No SSR benefits (initial HTML is minimal and client-rendered).

@@ -1,4 +1,4 @@
-# ADR: Persistent App Shell with Bottom Navigation
+# ADR: Persistent App Shell
 
 ## Status
 
@@ -6,38 +6,35 @@ Accepted
 
 ## Context
 
-The portfolio is designed to behave like a mobile application rather than a traditional multi-page website.
+The portfolio has shared UI and behavior that must persist while users navigate between pages:
 
-Requirements:
+- top identity/header content
+- social links
+- navigation links
+- crowd simulator visual strip
+- route transition animations
 
-- Navigation must feel stable and app-like on mobile
-- Layout should not be redefined per page
-- Global UI elements (navigation) must persist across screens
-- Route-level pages should remain simple and focused on content
-
-Implementing layout independently in each page would lead to duplication, inconsistent behavior, and harder refactoring.
+Duplicating this structure in each route page would increase coupling and drift.
 
 ## Decision
 
-Introduce a persistent **App Shell** component that:
+Use a persistent `AppShell` as the layout route element in React Router.
 
-- Remains mounted across route changes
-- Renders route content via React Router’s `<Outlet />`
-- Owns global layout concerns
-- Contains a fixed bottom navigation for primary routes
-
-All route-level pages render _inside_ the App Shell rather than defining their own layout.
+- `AppShell` remains mounted across route changes.
+- Route content is rendered through `useOutlet()`.
+- Route transitions are orchestrated centrally with `AnimatePresence`.
+- `AppShell` also owns first-load preloader behavior.
 
 ## Consequences
 
-### Positive
+Positive:
 
-- Layout logic is centralized and predictable
-- Pages remain thin and focused on composition
-- Navigation state aligns directly with routing state
-- Mobile UX feels closer to a native app
+- Shared layout and effects are implemented once.
+- Route pages stay focused on content.
+- Navigation behavior is consistent across pages.
+- Transition logic is centralized and easier to tune.
 
-### Negative
+Negative:
 
-- Requires careful spacing to avoid content being hidden behind navigation
-- Slightly more upfront structure compared to per-page layouts
+- Shell CSS must carefully manage scrolling and layering.
+- Route transition orchestration adds lifecycle complexity.

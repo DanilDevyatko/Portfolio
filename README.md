@@ -1,53 +1,54 @@
 # Portfolio
 
-This repository contains a mobile-first web app portfolio built as a small product.
-The goal is to demonstrate engineering thinking (architecture, decisions, scalability).
+Personal portfolio SPA built with React, TypeScript, and Vite.
+The app uses a persistent shell, route transitions, markdown-driven content, and interactive visual widgets.
 
-## Goals
+## Current Scope
 
-- App-like mobile experience (routing, persistent shell)
-- Clear structure and boundaries (app / pages / widgets / shared)
-- Documentation-first development (architecture + ADRs)
+- One app in this repo: `apps/portfolioWeb`
+- Pages: `Home` and `Projects`
+- Route map: `/` -> redirect to `/home`, plus `/home` and `/projects`
+- Client-only runtime (no SSR)
 
-## Tech stack
+## Tech Stack
 
-**Core**
+- React 19
+- TypeScript (strict mode)
+- Vite 7
+- React Router 7
+- Framer Motion (page transitions)
+- GSAP (crowd canvas animation)
+- React Markdown (content rendering)
+- CSS Modules + global CSS tokens
+- ESLint 9
+- pnpm workspace
 
-- React
-- TypeScript (strict)
-- Vite
-- React Router
+## Repository Layout
 
-**Styling**
+- `apps/portfolioWeb` - web app source and config
+- `docs/architecture.md` - architecture overview
+- `docs/adr` - architecture decision records
 
-- CSS Modules
-- Global design tokens (CSS variables)
+## Run Locally
 
-**Tooling**
-
-- pnpm (workspace-ready)
-- ESLint
-- Prettier
-
-**Architecture**
-
-- App Shell pattern
-- Client-side routing with layout routes
-- Mobile-first design
-
-## Repository structure
-
-- `apps/portfolioWeb` — the portfolio web application
-- `packages/*` — shared packages
-- `docs/` — project documentation
-  - `architecture.md` — system overview
-  - `adr/` — architecture decision records
-
-## Run locally
-
-From repo root:
+From repository root:
 
 ```bash
-pnpm -C apps/portfolioWeb install
-pnpm -C apps/portfolioWeb dev
+pnpm install
+pnpm --filter portfolioweb dev
+```
+
+Alternative (from app directory):
+
+```bash
+pnpm install
+pnpm dev
+```
+
+## Build and Lint
+
+```bash
+pnpm --filter portfolioweb lint
+pnpm --filter portfolioweb build
+pnpm --filter portfolioweb preview
 ```
