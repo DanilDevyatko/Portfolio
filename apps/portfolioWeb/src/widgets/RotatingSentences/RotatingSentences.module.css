@@ -3,6 +3,7 @@
   text-align: center;
   pointer-events: none;
   width: 100%;
+  margin: 0;
 }
 
 @keyframes fadeIn {

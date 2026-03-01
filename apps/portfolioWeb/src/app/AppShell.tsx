@@ -106,8 +106,8 @@ export function AppShell() {
         <div className={styles.crowdSimulator}>
           <CrowedSimulator />
         </div>
+        <div className={styles.copyright}>&copy; Danylo Deviatko</div>
       </main>
-      <div className={styles.copyright}>&copy; Danylo Deviatko</div>
     </div>
   );
 }
