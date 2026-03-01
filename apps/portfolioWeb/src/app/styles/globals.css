@@ -71,6 +71,26 @@ p {
   }
 }
 
+button {
+  background: none;
+  border: 1px solid var(--text);
+  border-radius: 5px;
+  color: var(--text);
+  padding: 5px 10px;
+  cursor: pointer;
+  transition:
+    background 0.4s,
+    color 0.4s,
+    border-color 0.4s;
+  margin: 10px 0;
+
+  &:hover {
+    background: var(--text);
+    color: var(--bg);
+    border-color: transparent;
+  }
+}
+
 /* Small phones */
 /* @media (min-width: 320px) { } */
 

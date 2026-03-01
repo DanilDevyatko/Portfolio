@@ -1,8 +1,11 @@
-import { getHomeMarkdown } from '../shared/content/home';
 import { RotatingSentences } from '../widgets/RotatingSentences/RotatingSentences';
 
-const homeMarkdown = getHomeMarkdown();
-const headings = homeMarkdown
+const markdowns = import.meta.glob<string>('../content/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+const headings = (markdowns['../content/home.md'] ?? '')
   .split('.')
   .map((sentence) => sentence.trim())
   .filter(Boolean);

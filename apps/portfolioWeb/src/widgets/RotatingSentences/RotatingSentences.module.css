@@ -2,6 +2,7 @@
   animation: fadeIn 1s ease-in-out;
   text-align: center;
   pointer-events: none;
+  width: 100%;
 }
 
 @keyframes fadeIn {

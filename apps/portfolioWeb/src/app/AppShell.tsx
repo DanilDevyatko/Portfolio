@@ -2,8 +2,6 @@ import { useLocation, useOutlet } from 'react-router-dom';
 import styles from './AppShell.module.css';
 import { Nav } from '../widgets/Nav/Nav';
 import ReactMarkdown from 'react-markdown';
-import { getAppShellMarkdown } from '../shared/content/appShell';
-import { getSocialsMarkdown } from '../shared/content/socials';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
@@ -11,8 +9,11 @@ import { MouseFollower } from '../widgets/MouseFollower/MouseFollower';
 import { CrowedSimulator } from '../widgets/CrowdSimulator/CrowdSimulator';
 import { Preloader } from '../widgets/preloader/Preloader';
 
-const appShellMarkdown = getAppShellMarkdown();
-const socialsMarkdown = getSocialsMarkdown();
+const markdowns = import.meta.glob<string>('../content/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
 
 const variants = {
   initial: { opacity: 0, y: 10, filter: 'blur(6px)' },
@@ -57,10 +58,16 @@ export function AppShell() {
       <main className={styles.main}>
         <header className={styles.header}>
           <div className={styles.logo}>
-            <ReactMarkdown>{appShellMarkdown}</ReactMarkdown>
+            <ReactMarkdown>{markdowns['../content/appShell.md'] ?? ''}</ReactMarkdown>
           </div>
           <div className={styles.socials}>
-            <ReactMarkdown>{socialsMarkdown}</ReactMarkdown>
+            <ReactMarkdown
+              components={{
+                a: (props) => <a {...props} target="_blank" rel="noopener noreferrer" />,
+              }}
+            >
+              {markdowns['../content/socials.md'] ?? ''}
+            </ReactMarkdown>
           </div>
         </header>
         <Nav />

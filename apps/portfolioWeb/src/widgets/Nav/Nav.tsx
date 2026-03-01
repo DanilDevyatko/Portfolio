@@ -14,6 +14,14 @@ export function Nav() {
         Home
       </NavLink>
       <NavLink
+        to="/about"
+        className={({ isActive }) =>
+          isActive ? `${styles.link} ${styles.active}` : styles.link
+        }
+      >
+        About
+      </NavLink>
+      <NavLink
         to="/projects"
         className={({ isActive }) =>
           isActive ? `${styles.link} ${styles.active}` : styles.link
