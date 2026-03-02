@@ -3,7 +3,7 @@
 }
 
 html {
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 html,
@@ -26,12 +26,17 @@ a {
   transition: color 0.4s;
 
   &:hover {
-    color: var(--muted);
+    color: var(--text);
   }
 
   @media (min-width: 768px) {
     color: var(--text);
   }
+}
+
+a h2 {
+  font-weight: 300;
+  text-align: center;
 }
 
 h2 a {
@@ -88,6 +93,23 @@ button {
     background: var(--text);
     color: var(--bg);
     border-color: transparent;
+  }
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 

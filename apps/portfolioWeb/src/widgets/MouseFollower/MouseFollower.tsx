@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useRef, useState } from 'react';
 
 export function MouseFollower() {
@@ -7,7 +5,9 @@ export function MouseFollower() {
   const [canUseMouse, setCanUseMouse] = useState(false);
 
   useEffect(() => {
-    const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const mq = window.matchMedia(
+      '(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)',
+    );
     const update = () => setCanUseMouse(mq.matches);
 
     update();
@@ -60,6 +60,7 @@ export function MouseFollower() {
   return (
     <div
       ref={ref}
+      aria-hidden="true"
       style={{
         position: 'fixed',
         top: -8,

@@ -1,6 +1,5 @@
-import { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { useNavigate } from 'react-router-dom';
+import { useEscapeBackNavigation } from '../shared/hooks/useEscapeBackNavigation';
 
 const markdowns = import.meta.glob<string>('../content/*.md', {
   query: '?raw',
@@ -9,19 +8,7 @@ const markdowns = import.meta.glob<string>('../content/*.md', {
 });
 
 export function AboutPage() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return;
-
-      if (window.history.length > 1) navigate(-1);
-      else navigate('/home');
-    };
-
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [navigate]);
+  useEscapeBackNavigation({ fallbackPath: '/home' });
 
   return (
     <>

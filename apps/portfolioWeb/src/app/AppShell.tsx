@@ -3,10 +3,10 @@ import styles from './AppShell.module.css';
 import { Nav } from '../widgets/Nav/Nav';
 import ReactMarkdown from 'react-markdown';
 
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { MouseFollower } from '../widgets/MouseFollower/MouseFollower';
-import { CrowedSimulator } from '../widgets/CrowdSimulator/CrowdSimulator';
+import { CrowdSimulator } from '../widgets/CrowdSimulator/CrowdSimulator';
 import { Preloader } from '../widgets/preloader/Preloader';
 
 const markdowns = import.meta.glob<string>('../content/*.md', {
@@ -24,17 +24,18 @@ const variants = {
 export function AppShell() {
   const location = useLocation();
   const outlet = useOutlet();
+  const prefersReducedMotion = useReducedMotion();
   const [loading, setLoading] = useState(true);
 
   // Freeze what is currently shown so exit can animate the *old* page
   const [shownKey, setShownKey] = useState(location.pathname);
-  const [shownNode, setShownNode] = useState<React.ReactNode>(outlet);
+  const [shownNode, setShownNode] = useState<ReactNode>(outlet);
 
   // Controls mount/unmount for exit animation
   const [isPresent, setIsPresent] = useState(true);
 
   // Store next page while current is exiting
-  const pendingRef = useRef<{ key: string; node: React.ReactNode } | null>(null);
+  const pendingRef = useRef<{ key: string; node: ReactNode } | null>(null);
 
   // Start exit when path changes
   useEffect(() => {
@@ -48,13 +49,13 @@ export function AppShell() {
   }, [location.pathname, outlet, shownKey]);
 
   useEffect(() => {
-    const id = window.setTimeout(() => setLoading(false), 3200);
+    const id = window.setTimeout(() => setLoading(false), prefersReducedMotion ? 0 : 3200);
     return () => window.clearTimeout(id);
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
     <div className={styles.shell}>
-      {loading && <Preloader />}
+      {loading && !prefersReducedMotion && <Preloader />}
       <main className={styles.main}>
         <header className={styles.header}>
           <div className={styles.logo}>
@@ -92,8 +93,14 @@ export function AppShell() {
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                style={{ willChange: 'transform, opacity, filter' }}
+                transition={
+                  prefersReducedMotion
+                    ? { duration: 0 }
+                    : { duration: 0.3, ease: [0.22, 1, 0.36, 1] }
+                }
+                style={{
+                  willChange: prefersReducedMotion ? 'auto' : 'transform, opacity, filter',
+                }}
                 className={styles.outlet}
               >
                 {shownNode}
@@ -102,9 +109,9 @@ export function AppShell() {
           </AnimatePresence>
         </div>
 
-        <MouseFollower />
+        {!prefersReducedMotion && <MouseFollower />}
         <div className={styles.crowdSimulator}>
-          <CrowedSimulator />
+          {!prefersReducedMotion && <CrowdSimulator />}
         </div>
         <div className={styles.copyright}>&copy; Danylo Deviatko</div>
       </main>

@@ -1,8 +1,8 @@
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { projectMeta } from '../content/projects';
 import ReactMarkdown from 'react-markdown';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEscapeBackNavigation } from '../shared/hooks/useEscapeBackNavigation';
 
 export function ProjectDetailPage() {
   const navigate = useNavigate();
@@ -14,18 +14,11 @@ export function ProjectDetailPage() {
     eager: true,
   });
   const md = files[`../content/projects/${params.slug}.md`] ?? '';
+  const isMissingProject = !project || md.length === 0;
 
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return;
+  useEscapeBackNavigation({ fallbackPath: '/projects' });
 
-      if (window.history.length > 1) navigate(-1);
-      else navigate('/projects');
-    };
-
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [navigate]);
+  if (isMissingProject) return <Navigate to="/projects" replace />;
 
   return (
     <div>
@@ -35,8 +28,8 @@ export function ProjectDetailPage() {
         Back to Projects
       </button>
       <h2>
-        <a href={project?.liveUrl} target="_blank">
-          {project?.title}
+        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+          {project.title}
         </a>
       </h2>
       <ReactMarkdown
