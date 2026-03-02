@@ -1,14 +1,20 @@
 # Portfolio
 
 Personal portfolio SPA built with React, TypeScript, and Vite.
-The app uses a persistent shell, route transitions, markdown-driven content, and interactive visual widgets.
+The app uses a persistent shell, lazy-loaded route pages, markdown-driven content, and interactive visual widgets.
 
 ## Current Scope
 
 - One app in this repo: `apps/portfolioWeb`
-- Pages: `Home` and `Projects`
-- Route map: `/` -> redirect to `/home`, plus `/home` and `/projects`
+- Pages: `Home`, `About`, `Projects`, and `Project Detail`
+- Route map:
+  - `/` -> redirect to `/home`
+  - `/home`
+  - `/about`
+  - `/projects`
+  - `/projects/:slug`
 - Client-only runtime (no SSR)
+- Project detail pages are URL-driven by `slug` and rendered from markdown files in `src/content/projects/*.md`
 
 ## Tech Stack
 
@@ -21,6 +27,7 @@ The app uses a persistent shell, route transitions, markdown-driven content, and
 - React Markdown (content rendering)
 - CSS Modules + global CSS tokens
 - ESLint 9
+- Vitest + Testing Library
 - pnpm workspace
 
 ## Repository Layout
@@ -48,7 +55,20 @@ pnpm dev
 ## Build and Lint
 
 ```bash
-pnpm --filter portfolioweb lint
-pnpm --filter portfolioweb build
+pnpm lint
+pnpm build
 pnpm --filter portfolioweb preview
 ```
+
+## Test
+
+```bash
+pnpm test
+```
+
+## Notes
+
+- Route pages are lazy-loaded in `src/app/router.tsx`.
+- Invalid project slugs redirect to `/projects`.
+- Motion-heavy visuals are disabled when `prefers-reduced-motion: reduce` is active.
+- See `BEST_PRACTICES_REPORT.md` for a detailed change report.

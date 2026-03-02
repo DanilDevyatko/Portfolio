@@ -22,9 +22,13 @@ Current routes:
 
 - `/` -> redirect to `/home`
 - `/home` -> Home page
+- `/about` -> About page
 - `/projects` -> Projects page
+- `/projects/:slug` -> Project detail page (slug-driven)
 
 `AppShell` is the layout route element and renders active page content via `Outlet`.
+Route pages are loaded with `React.lazy` and wrapped in `Suspense`.
+Invalid or missing project detail slugs are redirected to `/projects`.
 
 ## Consequences
 
@@ -33,6 +37,8 @@ Positive:
 - URL is the single source of navigation state.
 - Pages are directly linkable/bookmarkable.
 - Layout route cleanly supports persistent shell architecture.
+- Lazy route loading reduces initial bundle pressure.
+- Redirect fallback for bad slugs avoids broken detail views.
 
 Negative:
 
