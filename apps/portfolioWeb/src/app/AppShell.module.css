@@ -1,8 +1,9 @@
-.shell {
-  height: 100vh;
-  padding: 20px 20px 90px 20px;
+﻿.shell {
+  height: 90vh;
+  padding: 20px;
 
   @media (min-width: 768px) {
+    height: 100vh;
     padding: 40px 40px 0 40px;
   }
 }
@@ -14,8 +15,8 @@
   flex-direction: column;
   padding: 20px;
   border: 1px solid var(--border);
-  border-bottom: none;
   position: relative;
+  overflow: hidden;
 
   @media (min-width: 768px) {
     padding: 40px;
@@ -50,6 +51,37 @@
   }
 }
 
+@media (max-width: 767px) {
+  .outletWrapperHasScroll::after {
+    content: 'Swipe to scroll';
+    position: absolute;
+    left: 50%;
+    bottom: -8px;
+    transform: translateX(-50%);
+    width: calc(100% - 24px);
+    padding: 22px 0 6px;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--text) 70%, transparent);
+    background: linear-gradient(to top, var(--background) 22%, transparent);
+    pointer-events: none;
+    z-index: 2;
+    animation: mobileScrollHintPulse 1.8s ease-in-out infinite;
+  }
+}
+
+@keyframes mobileScrollHintPulse {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 .outlet {
   display: flex;
   flex-direction: column;
@@ -76,8 +108,8 @@
 .copyright {
   position: absolute;
   z-index: 0;
-  left: 15px;
-  bottom: 10px;
+  right: 0;
+  bottom: -20px;
   font-size: 12px;
   color: var(--text);
 
@@ -98,8 +130,10 @@
   height: clamp(120px, 26svh, 320px);
   overflow: hidden;
   opacity: 0.9;
+  display: none;
 
   @media (min-width: 768px) {
+    display: block;
     width: calc(100% + 80px);
     bottom: -60px;
     left: -40px;

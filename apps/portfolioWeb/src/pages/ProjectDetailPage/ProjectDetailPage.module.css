@@ -1,0 +1,10 @@
+.page {
+  position: relative;
+}
+
+.backButton {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  margin: 0 0 12px;
+}

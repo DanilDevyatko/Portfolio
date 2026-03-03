@@ -14,7 +14,7 @@ const ProjectsPage = lazy(async () => ({
   default: (await import('../pages/ProjectsPage')).ProjectsPage,
 }));
 const ProjectDetailPage = lazy(async () => ({
-  default: (await import('../pages/ProjectDetailPage')).ProjectDetailPage,
+  default: (await import('../pages/ProjectDetailPage/ProjectDetailPage')).ProjectDetailPage,
 }));
 
 function withSuspense(element: ReactNode) {

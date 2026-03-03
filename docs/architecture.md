@@ -19,8 +19,8 @@ main.tsx
         -> header markdown (name + role)
         -> socials markdown links
         -> Nav (Home, About, Projects)
-        -> outletWrapper (scroll container)
-        -> animated route page
+        -> outletWrapper (clipping + hint overlay host)
+        -> outlet (animated route page + scroll container)
         -> MouseFollower (desktop/fine-pointer + no reduced-motion)
         -> CrowdSimulator (canvas background strip, disabled for reduced-motion)
 ```
@@ -78,6 +78,11 @@ shared/content/
   home.ts
   projects.ts
 
+shared/ui/
+  BackButton/
+    BackButton.tsx
+    BackButton.module.css
+
 assets/
   logo.ico
   crowed.png
@@ -97,7 +102,7 @@ assets/
 - `Nav` reflects route state via `NavLink` active styles.
 - `HomePage` transforms `home.md` into sentence chunks and renders them through `RotatingSentences`.
 - `ProjectsPage` renders project links from `projectMeta`.
-- `ProjectDetailPage` renders a back button, linked title, and markdown body for the selected slug.
+- `ProjectDetailPage` renders `BackButton`, linked title, and markdown body for the selected slug.
 - `AboutPage`, `ProjectsPage`, and `ProjectDetailPage` use shared `useEscapeBackNavigation` hook for `Escape` key back navigation with fallback routes.
 - `Preloader` overlays initial render for 3200ms.
 - Invalid project slug/content redirects to `/projects`.
@@ -111,8 +116,9 @@ assets/
 Important layout behavior:
 
 - `.main` is a flex column container with hidden outer overflow.
-- `.outletWrapper` is the scroll container (`overflow-y: auto`, `min-height: 0`).
-- `.outlet` uses mobile-first top alignment to keep scroll start reachable on small screens, with centered alignment restored at `min-width: 768px`.
+- `.outletWrapper` provides clipping and overlay positioning (`overflow: hidden`, `min-height: 0`).
+- `.outlet` is the route content scroll container (`overflow-y: auto`) with hidden scrollbars.
+- On mobile, `AppShell` computes overflow with `ResizeObserver` + `MutationObserver`; `Swipe to scroll` hint appears only when content is actually scrollable.
 - `CrowdSimulator` is kept as a separate flex item so content scrolling does not push it out.
 
 ## 8. Motion and Interaction
@@ -142,10 +148,11 @@ TypeScript:
 
 - strict mode enabled in `tsconfig.app.json`
 - no emit in app config (`noEmit: true`)
+- alias: `@shared-ui/*` -> `src/shared/ui/*`
 
 ## 10. Current Tradeoffs
 
 - `CrowedSimulator` remains exported under its existing name for compatibility with current imports.
 - Preloader completion is timer-based, not tied to asset readiness.
-- App still depends on a Google Fonts network request at startup.
+- Primary font (`Montserrat`) is not bundled in the repo; runtime falls back to system fonts when unavailable.
 - There is no dedicated 404 route yet (invalid project slug redirects to `/projects`).

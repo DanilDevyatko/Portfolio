@@ -9,7 +9,7 @@ type RotatingSentencesProps = {
 };
 export function RotatingSentences({
   sentences,
-  intervalMs = 3000,
+  intervalMs = 2500,
   transitionDuration = 200,
   className,
 }: RotatingSentencesProps) {

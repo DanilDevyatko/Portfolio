@@ -1,0 +1,24 @@
+.button {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: rgba(11, 12, 16, 0.5);
+}
+
+.icon {
+  display: block;
+  width: 1em;
+  height: 1em;
+}
+
+.icon path {
+  stroke: currentColor;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

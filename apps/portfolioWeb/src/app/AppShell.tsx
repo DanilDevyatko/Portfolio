@@ -26,6 +26,8 @@ export function AppShell() {
   const outlet = useOutlet();
   const prefersReducedMotion = useReducedMotion();
   const [loading, setLoading] = useState(true);
+  const [hasOverflow, setHasOverflow] = useState(false);
+  const outletRef = useRef<HTMLDivElement | null>(null);
 
   // Freeze what is currently shown so exit can animate the *old* page
   const [shownKey, setShownKey] = useState(location.pathname);
@@ -49,9 +51,43 @@ export function AppShell() {
   }, [location.pathname, outlet, shownKey]);
 
   useEffect(() => {
-    const id = window.setTimeout(() => setLoading(false), prefersReducedMotion ? 0 : 3200);
+    const id = window.setTimeout(
+      () => setLoading(false),
+      prefersReducedMotion ? 0 : 3200,
+    );
     return () => window.clearTimeout(id);
   }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    const element = outletRef.current;
+    if (!element) {
+      return;
+    }
+
+    const updateOverflow = () => {
+      setHasOverflow(element.scrollHeight > element.clientHeight + 1);
+    };
+
+    const resizeObserver = new ResizeObserver(updateOverflow);
+    resizeObserver.observe(element);
+    window.addEventListener('resize', updateOverflow);
+    const mutationObserver = new MutationObserver(updateOverflow);
+    mutationObserver.observe(element, {
+      subtree: true,
+      childList: true,
+      characterData: true,
+    });
+    const rafId = window.requestAnimationFrame(updateOverflow);
+    const timeoutId = window.setTimeout(updateOverflow, 200);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      window.clearTimeout(timeoutId);
+      mutationObserver.disconnect();
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', updateOverflow);
+    };
+  }, [shownKey, isPresent]);
 
   return (
     <div className={styles.shell}>
@@ -72,7 +108,9 @@ export function AppShell() {
           </div>
         </header>
         <Nav />
-        <div className={styles.outletWrapper}>
+        <div
+          className={`${styles.outletWrapper} ${hasOverflow ? styles.outletWrapperHasScroll : ''}`.trim()}
+        >
           <AnimatePresence
             mode="wait"
             initial={false}
@@ -99,8 +137,11 @@ export function AppShell() {
                     : { duration: 0.3, ease: [0.22, 1, 0.36, 1] }
                 }
                 style={{
-                  willChange: prefersReducedMotion ? 'auto' : 'transform, opacity, filter',
+                  willChange: prefersReducedMotion
+                    ? 'auto'
+                    : 'transform, opacity, filter',
                 }}
+                ref={outletRef}
                 className={styles.outlet}
               >
                 {shownNode}

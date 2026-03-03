@@ -1,15 +1,12 @@
-**I’m a frontend engineer**
-who enjoys working with complex systems and turning them into clear, reliable user experiences.
+Frontend Engineer focused on building clear, reliable user experiences on top of complex systems.
 
-For me, UI is not just layout and styling - it’s architecture, data flow, state management, performance, and long-term maintainability. I like understanding how things actually work under the surface. When something breaks or behaves unexpectedly, I’m not satisfied until I know why.
+For me, UI isn’t just styling — it’s architecture, data flow, state management, performance, and long-term maintainability. I care about understanding how things work under the surface and solving problems at their root, not just patching symptoms.
 
-I value myself as a specialist. I trust my fundamentals and my ability to break down unfamiliar problems. Give me enough context and constraints, and I’ll figure it out. Complexity doesn’t intimidate me - it gives me something meaningful to solve.
+I trust my fundamentals and my ability to break down unfamiliar challenges. Give me context and constraints — I’ll figure it out.
 
-Over the years, I’ve worked across different product domains - from high-load interactive systems to commerce and content-driven platforms. Different environments, different business logic - but the same approach: build clean architecture, avoid fragile solutions, and design interfaces that stay reliable over time.
+I value:
 
-I care about:
-
-- Clear, maintainable UI systems
+- Clean, maintainable UI systems
 
 - Strong React & TypeScript foundations
 
@@ -17,7 +14,6 @@ I care about:
 
 - Performance and predictability
 
-- Honest communication and ownership
+- Ownership and honest communication
 
 I don’t chase trends. I build durable systems.
-I don’t look for shortcuts. I look for understanding.

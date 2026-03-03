@@ -1,7 +1,7 @@
 # Portfolio
 
 Personal portfolio SPA built with React, TypeScript, and Vite.
-The app uses a persistent shell, lazy-loaded route pages, markdown-driven content, and interactive visual widgets.
+The app uses a persistent shell, lazy-loaded route pages, markdown-driven content, reusable shared UI, and interactive visual widgets.
 
 ## Current Scope
 
@@ -15,6 +15,9 @@ The app uses a persistent shell, lazy-loaded route pages, markdown-driven conten
   - `/projects/:slug`
 - Client-only runtime (no SSR)
 - Project detail pages are URL-driven by `slug` and rendered from markdown files in `src/content/projects/*.md`
+- Back navigation is standardized through:
+  - `useEscapeBackNavigation` (Escape key)
+  - `BackButton` reusable component (`src/shared/ui/BackButton/BackButton.tsx`)
 
 ## Tech Stack
 
@@ -71,4 +74,6 @@ pnpm test
 - Route pages are lazy-loaded in `src/app/router.tsx`.
 - Invalid project slugs redirect to `/projects`.
 - Motion-heavy visuals are disabled when `prefers-reduced-motion: reduce` is active.
-- See `BEST_PRACTICES_REPORT.md` for a detailed change report.
+- On mobile, the shell shows a `Swipe to scroll` hint only when route content actually overflows.
+- Path alias `@shared-ui/*` resolves to `apps/portfolioWeb/src/shared/ui/*` (configured in Vite + TypeScript).
+- See `docs/architecture.md` for deeper implementation details.
