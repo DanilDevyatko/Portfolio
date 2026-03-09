@@ -69,7 +69,7 @@ export function MouseFollower() {
         height: '50px',
         borderRadius: '50%',
         pointerEvents: 'none',
-        background: 'radial-gradient(circle, rgba(255,255,255,0.4), transparent 70%)',
+        background: 'var(--mouse-glow)',
         transform: 'translate3d(0,0,0)',
         zIndex: 9999,
       }}

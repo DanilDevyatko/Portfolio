@@ -8,16 +8,36 @@
 
   /* typography */
   --font-sans:
-    'Montserrat', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
-    Arial, sans-serif;
+    'Montserrat', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+    sans-serif;
 
-  /* colors (start neutral) */
-  --bg: #0b0c10;
-  --surface: #111218;
+  /* colors */
+  --bg: #06080d;
+  --surface: #06080d;
+  --surface-raised: rgba(11, 12, 16, 0.55);
   --text: #f3f4f6;
-  --muted: #a1a1aa;
-  --border: rgba(243, 244, 246, 0.6);
+  --muted: #9ea4af;
+  --border: rgba(243, 244, 246, 0.42);
+  --shell-shadow: rgba(0, 0, 0, 0);
+  --mouse-glow: radial-gradient(circle, rgba(255, 255, 255, 0.35), transparent 70%);
+  --toggle-icon-filter: brightness(0) invert(1);
 
   /* nav */
   --nav-height: 64px;
+
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --bg: #fff;
+  --surface: #ffffff;
+  --surface-raised: rgba(255, 255, 255, 0.84);
+  --text: #10161f;
+  --muted: #5d6673;
+  --border: rgba(16, 22, 31, 1);
+  --shell-shadow: rgba(16, 22, 31, 0.1);
+  --mouse-glow: radial-gradient(circle, rgba(16, 22, 31, 0.18), transparent 70%);
+  --toggle-icon-filter: brightness(0) saturate(100%);
+
+  color-scheme: light;
 }

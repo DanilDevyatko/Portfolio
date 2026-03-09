@@ -1,0 +1,141 @@
+.button {
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  z-index: 3;
+  display: grid;
+  place-items: start center;
+  inline-size: 44px;
+  block-size: 72px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  transform: translateX(-50%);
+  transform-origin: center top;
+  touch-action: manipulation;
+  isolation: isolate;
+
+  &:hover,
+  &:focus-visible {
+    background: transparent;
+    border-color: transparent;
+    color: inherit;
+  }
+}
+
+.pendulum {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: center top;
+  animation: pendulumSwing 4.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.cord {
+  inline-size: 2px;
+  block-size: 30px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text) 76%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 6%, transparent);
+}
+
+.lamp {
+  inline-size: 16px;
+  block-size: 18px;
+  margin-top: -2px;
+  transform-origin: center top;
+  transition: transform 0.35s ease;
+}
+
+.icon {
+  inline-size: 100%;
+  block-size: auto;
+  display: block;
+  filter: var(--toggle-icon-filter)
+    drop-shadow(0 0 10px color-mix(in srgb, var(--text) 18%, transparent));
+  opacity: 0.95;
+  pointer-events: none;
+  transform: translateY(-6px) scale(1, -1);
+  transition:
+    filter 0.35s ease,
+    opacity 0.35s ease;
+}
+
+.button:hover .lamp,
+.button:focus-visible .lamp {
+  transform: translateY(2px) scale(1.03);
+}
+
+.button:hover .icon,
+.button:focus-visible .icon {
+  opacity: 1;
+}
+
+@keyframes pendulumSwing {
+  0% {
+    transform: rotate(4deg);
+  }
+  50% {
+    transform: rotate(-4deg);
+  }
+  100% {
+    transform: rotate(4deg);
+  }
+}
+
+@media (min-width: 768px) {
+  .button {
+    inline-size: 76px;
+    block-size: 134px;
+  }
+
+  .cord {
+    block-size: 72px;
+  }
+
+  .lamp {
+    inline-size: 36px;
+    block-size: 42px;
+  }
+
+  .icon {
+    transform: translateY(-14px) scale(1, -1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pendulum {
+    animation: none;
+  }
+
+  .button:hover .pendulum,
+  .button:focus-visible .pendulum {
+    animation: none;
+  }
+
+  .lamp {
+    transform: none;
+  }
+
+  .icon {
+    transition:
+      filter 0.2s ease,
+      opacity 0.2s ease;
+  }
+}
+
+.srOnly {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

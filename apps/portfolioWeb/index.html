@@ -9,8 +9,38 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap"
     />
+    <meta name="theme-color" content="#06080d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Danylo Deviatko</title>
+    <script>
+      (() => {
+        const storageKey = 'portfolio-theme';
+        const darkThemeColor = '#06080d';
+        const lightThemeColor = '#f4f2ec';
+
+        try {
+          const storedTheme = window.localStorage.getItem(storageKey);
+          const hasStoredTheme = storedTheme === 'dark' || storedTheme === 'light';
+          const theme = hasStoredTheme
+            ? storedTheme
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.style.colorScheme = theme;
+
+          const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+          themeColorMeta?.setAttribute(
+            'content',
+            theme === 'dark' ? darkThemeColor : lightThemeColor,
+          );
+        } catch {
+          document.documentElement.dataset.theme = 'dark';
+          document.documentElement.style.colorScheme = 'dark';
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

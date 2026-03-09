@@ -8,6 +8,8 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { MouseFollower } from '../widgets/MouseFollower/MouseFollower';
 import { CrowdSimulator } from '../widgets/CrowdSimulator/CrowdSimulator';
 import { Preloader } from '../widgets/preloader/Preloader';
+import { useTheme } from '../shared/hooks/useTheme';
+import { ThemeToggle } from '../widgets/ThemeToggle/ThemeToggle';
 
 const markdowns = import.meta.glob<string>('../content/*.md', {
   query: '?raw',
@@ -25,6 +27,7 @@ export function AppShell() {
   const location = useLocation();
   const outlet = useOutlet();
   const prefersReducedMotion = useReducedMotion();
+  const { theme, toggleTheme } = useTheme();
   const [loading, setLoading] = useState(true);
   const [hasOverflow, setHasOverflow] = useState(false);
   const outletRef = useRef<HTMLDivElement | null>(null);
@@ -93,6 +96,7 @@ export function AppShell() {
     <div className={styles.shell}>
       {loading && !prefersReducedMotion && <Preloader />}
       <main className={styles.main}>
+        <ThemeToggle theme={theme} onToggle={toggleTheme} />
         <header className={styles.header}>
           <div className={styles.logo}>
             <ReactMarkdown>{markdowns['../content/appShell.md'] ?? ''}</ReactMarkdown>
