@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { canGoBack } from '../../lib/canGoBack';
 import styles from './BackButton.module.css';
 
 type BackButtonProps = {
@@ -18,7 +19,7 @@ export function BackButton({
   const navigate = useNavigate();
 
   const onClick = () => {
-    if (window.history.length > 1) navigate(-1);
+    if (canGoBack()) navigate(-1);
     else navigate(fallbackPath);
   };
 

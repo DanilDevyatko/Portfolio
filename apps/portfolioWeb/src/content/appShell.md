@@ -1,3 +1,3 @@
 # Danylo Deviatko
 
-Front End Engineer
+Frontend Engineer · React · TypeScript · Game UI

@@ -6,13 +6,14 @@ The app uses a persistent shell, lazy-loaded route pages, markdown-driven conten
 ## Current Scope
 
 - One app in this repo: `apps/portfolioWeb`
-- Pages: `Home`, `About`, `Projects`, and `Project Detail`
+- Pages: `Home`, `About`, `Projects`, `Project Detail`, and `Not Found`
 - Route map:
   - `/` -> redirect to `/home`
   - `/home`
   - `/about`
   - `/projects`
   - `/projects/:slug`
+  - `*` -> in-shell 404 page
 - Client-only runtime (no SSR)
 - Project detail pages are URL-driven by `slug` and rendered from markdown files in `src/content/projects/*.md`
 - Back navigation is standardized through:
@@ -74,6 +75,7 @@ pnpm test
 - Route pages are lazy-loaded in `src/app/router.tsx`.
 - Invalid project slugs redirect to `/projects`.
 - Motion-heavy visuals are disabled when `prefers-reduced-motion: reduce` is active.
-- On mobile, the shell shows a `Swipe to scroll` hint only when route content actually overflows.
+- The shell fades the content edge and shows a scroll hint only when route content actually overflows.
+- CV data lives in `src/content/profile.ts` and `src/content/projects.ts`; replace `public/Danylo_Deviatko_CV.pdf` when the CV changes.
 - Path alias `@shared-ui/*` resolves to `apps/portfolioWeb/src/shared/ui/*` (configured in Vite + TypeScript).
 - See `docs/architecture.md` for deeper implementation details.

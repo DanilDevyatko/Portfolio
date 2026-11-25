@@ -1,5 +1,6 @@
 .page {
   position: relative;
+  padding-bottom: 24px;
 }
 
 .backButton {
@@ -7,4 +8,66 @@
   top: 0;
   z-index: 3;
   margin: 0 0 12px;
+  background: var(--surface);
+}
+
+.header {
+  margin-bottom: 28px;
+
+  h2 {
+    margin-bottom: 8px;
+  }
+}
+
+.meta {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.role {
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.prose {
+  margin-bottom: 28px;
+}
+
+.sectionTitle {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
+}
+
+.highlights {
+  margin-bottom: 28px;
+
+  ul {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 14px;
+    line-height: 1.6;
+
+    @media (min-width: 768px) {
+      font-size: 16px;
+    }
+  }
+
+  li + li {
+    margin-top: 6px;
+  }
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  font-size: 14px;
 }

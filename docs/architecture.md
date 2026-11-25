@@ -18,8 +18,9 @@ main.tsx
      -> AppShell (persistent)
         -> header markdown (name + role)
         -> socials markdown links
-        -> Nav (Home, About, Projects)
-        -> outletWrapper (clipping + hint overlay host)
+        -> body (column on mobile, nav + content row on >=1024px)
+           -> Nav (Home, About, Projects)
+           -> outletWrapper (clipping + hint overlay host)
         -> outlet (animated route page + scroll container)
         -> MouseFollower (desktop/fine-pointer + no reduced-motion)
         -> CrowdSimulator (canvas background strip, disabled for reduced-motion)
@@ -34,6 +35,9 @@ Source: `src/app/router.tsx`
 - `/about` -> `AboutPage`
 - `/projects` -> `ProjectsPage`
 - `/projects/:slug` -> `ProjectDetailPage`
+- `*` -> `NotFoundPage` (rendered inside the shell)
+
+All pages sit under a pathless layout route with `errorElement: <RouteErrorPage />`, so a thrown error or a failed lazy chunk (e.g. right after a deploy) shows a reload screen inside the shell instead of React Router's default developer error page.
 
 Router type: `createBrowserRouter`.
 Pages are lazy-loaded via `React.lazy` + `Suspense`.
@@ -52,10 +56,11 @@ app/
     globals.css
 
 pages/
-  HomePage.tsx
-  AboutPage.tsx
-  ProjectsPage.tsx
-  ProjectDetailPage.tsx
+  HomePage/
+  AboutPage/
+  ProjectsPage/
+  ProjectDetailPage/
+  NotFoundPage/        (NotFoundPage + RouteErrorPage)
 
 widgets/
   Nav/
@@ -69,30 +74,35 @@ content/
   socials.md
   home.md
   about.md
-  projects.md
-  projects.ts
+  profile.ts           (intro, stats, experience, skills, education, contact)
+  projects.ts          (projectMeta: client, role, period, stack, highlights, links)
   projects/
     *.md
 
-shared/content/
-  home.ts
-  projects.ts
+shared/lib/
+  canGoBack.ts
 
 shared/ui/
   BackButton/
-    BackButton.tsx
-    BackButton.module.css
+  Tags/
 
 assets/
-  logo.ico
   crowed.png
+  the-light-bulb.svg
+
+public/
+  logo.ico
+  robots.txt
+  sitemap.xml
+  Danylo_Deviatko_CV.pdf
 ```
 
 ## 5. Content Flow
 
 - Base copy is authored in `src/content/*.md`.
-- `AppShell`, `HomePage`, `AboutPage`, and `ProjectDetailPage` load markdown through `import.meta.glob(..., { query: '?raw', import: 'default', eager: true })`.
-- Project list metadata (slug, title, live URL) is authored in `src/content/projects.ts` as `projectMeta`.
+- Long-form prose is markdown; structured CV data (stats, experience, skills, project metadata) is typed TS in `src/content/profile.ts` and `src/content/projects.ts`.
+- `HomePage` and `AboutPage` import markdown with `?raw`; `AppShell` and `ProjectDetailPage` use `import.meta.glob(..., { query: '?raw', import: 'default', eager: true })`.
+- Project metadata (slug, title, client, role, period, summary, stack, highlights, live/repo URLs) is authored in `src/content/projects.ts` as `projectMeta`.
 - Project detail markdown is resolved by slug from `src/content/projects/<slug>.md`.
 - Markdown rendering is done by `react-markdown`.
 
@@ -100,11 +110,13 @@ assets/
 
 - `AppShell` orchestrates persistent layout and route transitions.
 - `Nav` reflects route state via `NavLink` active styles.
-- `HomePage` transforms `home.md` into sentence chunks and renders them through `RotatingSentences`.
-- `ProjectsPage` renders project links from `projectMeta`.
-- `ProjectDetailPage` renders `BackButton`, linked title, and markdown body for the selected slug.
+- `HomePage` renders `home.md` sentences through `RotatingSentences`, then the intro, key stats and CTAs (projects, CV, email).
+- `AboutPage` renders `about.md` plus Experience, Skills, Education and Contact sections from `profile.ts`.
+- `ProjectsPage` renders project cards (client, period, summary, stack) from `projectMeta`.
+- `ProjectDetailPage` renders `BackButton`, meta header, markdown body, highlights and live/source links.
+- Back navigation (`BackButton`, `useEscapeBackNavigation`) only calls `navigate(-1)` when `canGoBack()` sees an in-app history entry, so it never sends a visitor back to the referring site.
 - `AboutPage`, `ProjectsPage`, and `ProjectDetailPage` use shared `useEscapeBackNavigation` hook for `Escape` key back navigation with fallback routes.
-- `Preloader` overlays initial render for 3200ms.
+- `Preloader` overlays initial render for 3200ms, once per browser session (`sessionStorage`).
 - Invalid project slug/content redirects to `/projects`.
 
 ## 7. Styling System
@@ -118,7 +130,7 @@ Important layout behavior:
 - `.main` is a flex column container with hidden outer overflow.
 - `.outletWrapper` provides clipping and overlay positioning (`overflow: hidden`, `min-height: 0`).
 - `.outlet` is the route content scroll container (`overflow-y: auto`) with hidden scrollbars.
-- On mobile, `AppShell` computes overflow with `ResizeObserver` + `MutationObserver`; `Swipe to scroll` hint appears only when content is actually scrollable.
+- `AppShell` computes overflow with `ResizeObserver` + `MutationObserver`; when content is scrollable the outlet bottom fades out and a hint appears (`Swipe to scroll` on mobile, `Scroll for more` on wider screens).
 - `CrowdSimulator` is kept as a separate flex item so content scrolling does not push it out.
 
 ## 8. Motion and Interaction
@@ -155,4 +167,5 @@ TypeScript:
 - `CrowedSimulator` remains exported under its existing name for compatibility with current imports.
 - Preloader completion is timer-based, not tied to asset readiness.
 - Primary font (`Montserrat`) is not bundled in the repo; runtime falls back to system fonts when unavailable.
-- There is no dedicated 404 route yet (invalid project slug redirects to `/projects`).
+- Invalid project slugs still redirect to `/projects`; other unknown paths render `NotFoundPage`.
+- SEO meta, Open Graph and JSON-LD live statically in `index.html`; per-route titles/descriptions are not set yet.

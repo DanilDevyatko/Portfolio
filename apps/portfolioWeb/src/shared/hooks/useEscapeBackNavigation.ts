@@ -1,18 +1,21 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { canGoBack } from '../lib/canGoBack';
 
 type UseEscapeBackNavigationOptions = {
   fallbackPath: string;
 };
 
-export function useEscapeBackNavigation({ fallbackPath }: UseEscapeBackNavigationOptions) {
+export function useEscapeBackNavigation({
+  fallbackPath,
+}: UseEscapeBackNavigationOptions) {
   const navigate = useNavigate();
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return;
 
-      if (window.history.length > 1) navigate(-1);
+      if (canGoBack()) navigate(-1);
       else navigate(fallbackPath);
     };
 

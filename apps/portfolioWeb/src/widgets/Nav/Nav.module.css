@@ -13,6 +13,12 @@
   @media (min-width: 768px) {
     margin-top: 40px;
   }
+
+  @media (min-width: 1024px) {
+    flex: 0 0 136px;
+    height: auto;
+    margin-top: 24px;
+  }
 }
 
 .link {

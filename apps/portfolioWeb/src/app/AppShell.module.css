@@ -1,6 +1,7 @@
 ﻿.shell {
-  height: 90vh;
-  padding: 20px;
+  height: 100vh;
+  height: 100svh;
+  padding: 20px 20px 32px;
 
   @media (min-width: 768px) {
     height: 100vh;
@@ -42,6 +43,19 @@
   }
 }
 
+.body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+
+  /* Wide screens: nav becomes a left column so content gets the full height. */
+  @media (min-width: 1024px) {
+    flex-direction: row;
+    gap: 24px;
+  }
+}
+
 .outletWrapper {
   position: relative;
   padding: 20px;
@@ -54,7 +68,34 @@
   overflow: hidden;
 
   @media (min-width: 768px) {
-    padding: 40px;
+    padding: 24px 40px;
+  }
+
+  @media (min-width: 1024px) {
+    margin: 0;
+    /* Offset the nav column so content stays visually centred in the frame. */
+    margin-right: 160px;
+  }
+}
+
+/* Fade the bottom edge when content scrolls, so it is clear there is more. */
+.outletWrapperHasScroll .outlet {
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 48px), transparent);
+}
+
+@media (min-width: 768px) {
+  .outletWrapperHasScroll::after {
+    content: 'Scroll for more';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    pointer-events: none;
+    z-index: 2;
   }
 }
 
@@ -134,7 +175,7 @@
   right: -20px;
   bottom: -20px;
   width: calc(100% + 40px);
-  height: clamp(120px, 26svh, 320px);
+  height: clamp(110px, 20svh, 240px);
   overflow: hidden;
   opacity: 0.95;
   pointer-events: none;

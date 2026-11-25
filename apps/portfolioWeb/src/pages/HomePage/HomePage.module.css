@@ -1,0 +1,101 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 22px;
+
+  @media (min-width: 768px) {
+    gap: 26px;
+  }
+}
+
+.hero {
+  width: 100%;
+  min-height: 2.6em;
+  display: flex;
+  align-items: center;
+  font-size: 28px;
+
+  @media (min-width: 768px) {
+    font-size: 48px;
+    min-height: 1.4em;
+  }
+}
+
+.intro {
+  max-width: 600px;
+}
+
+.lead {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.body {
+  color: var(--muted);
+  margin: 0;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 6px;
+  padding: 12px 8px 0;
+  border-top: 1px solid color-mix(in srgb, var(--text) 22%, transparent);
+}
+
+.statValue {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 300;
+  line-height: 1;
+
+  @media (min-width: 768px) {
+    font-size: 40px;
+  }
+}
+
+.statLabel {
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--muted);
+
+  @media (min-width: 768px) {
+    font-size: 12px;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px 24px;
+  font-size: 14px;
+}
+
+.primary {
+  padding: 8px 16px;
+  border: 1px solid var(--text);
+  border-radius: 5px;
+  color: var(--text);
+  font-weight: 500;
+  transition:
+    background 0.35s ease,
+    color 0.35s ease;
+
+  &:hover {
+    background: var(--text);
+    color: var(--bg);
+  }
+}

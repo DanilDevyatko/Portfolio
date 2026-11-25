@@ -17,6 +17,24 @@ const markdowns = import.meta.glob<string>('../content/*.md', {
   eager: true,
 });
 
+const PRELOADER_KEY = 'portfolio-preloader-seen';
+
+function hasSeenPreloader(): boolean {
+  try {
+    return window.sessionStorage.getItem(PRELOADER_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function markPreloaderSeen(): void {
+  try {
+    window.sessionStorage.setItem(PRELOADER_KEY, '1');
+  } catch {
+    // Storage unavailable: the preloader simply shows again next time.
+  }
+}
+
 const variants = {
   initial: { opacity: 0, y: 10, filter: 'blur(6px)' },
   animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
@@ -28,7 +46,8 @@ export function AppShell() {
   const outlet = useOutlet();
   const prefersReducedMotion = useReducedMotion();
   const { theme, toggleTheme } = useTheme();
-  const [loading, setLoading] = useState(true);
+  // Show the intro preloader once per browser session, not on every reload or deep link.
+  const [loading, setLoading] = useState(() => !hasSeenPreloader());
   const [hasOverflow, setHasOverflow] = useState(false);
   const outletRef = useRef<HTMLDivElement | null>(null);
 
@@ -54,12 +73,16 @@ export function AppShell() {
   }, [location.pathname, outlet, shownKey]);
 
   useEffect(() => {
+    if (!loading) return;
     const id = window.setTimeout(
-      () => setLoading(false),
+      () => {
+        setLoading(false);
+        markPreloaderSeen();
+      },
       prefersReducedMotion ? 0 : 3200,
     );
     return () => window.clearTimeout(id);
-  }, [prefersReducedMotion]);
+  }, [loading, prefersReducedMotion]);
 
   useEffect(() => {
     const element = outletRef.current;
@@ -111,47 +134,49 @@ export function AppShell() {
             </ReactMarkdown>
           </div>
         </header>
-        <Nav />
-        <div
-          className={`${styles.outletWrapper} ${hasOverflow ? styles.outletWrapperHasScroll : ''}`.trim()}
-        >
-          <AnimatePresence
-            mode="wait"
-            initial={false}
-            onExitComplete={() => {
-              const next = pendingRef.current;
-              if (next) {
-                setShownKey(next.key);
-                setShownNode(next.node);
-                pendingRef.current = null;
-              }
-              setIsPresent(true);
-            }}
+        <div className={styles.body}>
+          <Nav />
+          <div
+            className={`${styles.outletWrapper} ${hasOverflow ? styles.outletWrapperHasScroll : ''}`.trim()}
           >
-            {isPresent && (
-              <motion.div
-                key={shownKey}
-                variants={variants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={
-                  prefersReducedMotion
-                    ? { duration: 0 }
-                    : { duration: 0.3, ease: [0.22, 1, 0.36, 1] }
+            <AnimatePresence
+              mode="wait"
+              initial={false}
+              onExitComplete={() => {
+                const next = pendingRef.current;
+                if (next) {
+                  setShownKey(next.key);
+                  setShownNode(next.node);
+                  pendingRef.current = null;
                 }
-                style={{
-                  willChange: prefersReducedMotion
-                    ? 'auto'
-                    : 'transform, opacity, filter',
-                }}
-                ref={outletRef}
-                className={styles.outlet}
-              >
-                {shownNode}
-              </motion.div>
-            )}
-          </AnimatePresence>
+                setIsPresent(true);
+              }}
+            >
+              {isPresent && (
+                <motion.div
+                  key={shownKey}
+                  variants={variants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={
+                    prefersReducedMotion
+                      ? { duration: 0 }
+                      : { duration: 0.3, ease: [0.22, 1, 0.36, 1] }
+                  }
+                  style={{
+                    willChange: prefersReducedMotion
+                      ? 'auto'
+                      : 'transform, opacity, filter',
+                  }}
+                  ref={outletRef}
+                  className={styles.outlet}
+                >
+                  {shownNode}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
 
         {!prefersReducedMotion && <MouseFollower />}
